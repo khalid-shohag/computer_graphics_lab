@@ -1,42 +1,65 @@
 #include<graphics.h>
-#include<math.h>
 #include<iostream>
+#include<math.h>
 #define PI 3.14
-
 using namespace std;
 
-void translation(int x1, int y1, int x2, int y2, int Tx, int Ty)
+void translation(int x[], int y[], int tx, int ty)
 {
-    x1+=Tx; x2+=Tx; y1+=Ty; y2+=Ty;
-    setcolor(GREEN);
-    rectangle(x1, y1, x2, y2);
-}
-
-void rotation(int x1, int y1, int x2, int y2, float angle)
-{
-    int rx1 = x1*cos(angle) - y1*sin(angle);
-    int ry1 = x1*sin(angle) + y1*cos(angle);
-//    int rx2 = x2*cos(angle) - y2*sin(angle);
-//    int ry2 = x2*sin(angle) + y2*cos(angle);
-//    cout << rx1 << " " << ry1 << " " << rx2 << " " << ry2 << endl;
+    //x1+=tx; y1+=ty; x2+=tx; y2+=ty;
     setcolor(RED);
-    rectangle(rx1, ry1, x2, y2);
+    for(int i=0; i<4; i++)
+    {
+        line(x[i]+tx, y[i]+ty, x[(i+1)%4]+tx, y[(i+1)%4]+ty);
+    }
 }
 
-void scaling(int x1, int y1, int x2, int y2, float sx, float sy)
+void scaling(int x[], int y[], float sx, float sy)
 {
-    x1*=sx; x2*=sy; y1*=sy; y2*=sy;
     setcolor(BLUE);
-    rectangle(x1, y1, x2, y2);
+    for(int i=0; i<4; i++)
+    {
+        line(x[i]*sx, y[i]*sy, x[(i+1)%4]*sx, y[(i+1)%4]*sy);
+    }
+}
+
+void rotation(int x[], int y[],  float angle)
+{
+    setcolor(GREEN);
+    for(int i=0; i<4; i++)
+    {
+        int rx1 = x[i]*cos(angle) - y[i]*sin(angle);
+        int ry1 = x[i]*sin(angle) + y[i]*cos(angle);
+        int rx2 = x[(i+1)%4]*cos(angle) - y[(i+1)%4]*sin(angle);
+        int ry2 = x[(i+1)%4]*sin(angle) + y[(i+1)%4]*cos(angle);
+        line(rx1, ry1, rx2, ry2);
+    }
 }
 
 int main()
 {
     initwindow(1000, 1000);
-    int x1 = 100, y1 = 50, x2 = 400, y2 = 350;
-    rectangle(x1, y1, x2, y2);
-    translation(x1, y1, x2, y2, 100, 130);
-    rotation(x1, y1, x2, y2, 30*PI/180);
-    scaling(x1, y1, x2, y2, 0.5, 0.5);
+
+    int x[] = {200, 200, 500, 500};
+    int y[] = {200, 500, 500, 200};
+
+    for(int i=0; i<4; i++)
+    {
+        line(x[i], y[i], x[(i+1)%4], y[(i+1)%4]);
+    }
+
+//    int x1 = 200, y1 = 200, x2 = 500, y2 = 500;
+//    rectangle(x1, y1, x2, y2);
+    //translation vector
+    int tx = 295, ty = 295;
+    translation(x, y, tx, ty);
+//
+    //scaling factors
+    float sx = 0.7, sy = 0.7;
+    scaling(x, y, sx, sy);
+//
+    float angle = 15*PI/180;
+    rotation(x, y, angle);
     getch();
+    return 0;
 }
